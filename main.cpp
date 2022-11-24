@@ -53,27 +53,104 @@ void error(Error e) {
 }
 
 // Función auxiliar para ayudar a que no hayan errores internos en el programa
-void correccion(TUsuario &usu, TMaquina &maq){
-    cout<<"Por el bien del juego, hemos hecho unos cambios en los valores de sus cartas los cuales no afectaran mucho.";
-    do{
-        for(int i=0; i<KMAXCARTAS-1; i++){
-            for(int j=0; j<KMAXCARTAS-1; j++){
-                for(int k=0; k<KMAXCARTAS-1; k++){
-                    if(usu.cartasu[i].vida==usu.cartasu[j].vida && usu.cartasu[i].vida==usu.cartasu[k].vida){
-                        usu.cartasu[i].vida=usu.cartasu[i].vida+1;
+void correccion(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq, bool zero){
+    cout<<"Por el bien del juego, hemos hecho unos cambios en los valores de sus cartas los cuales no afectaran mucho." << endl;
+    if(zero==true){
+        if(usuario==true && maquina==false){
+            do{
+                for(int i=0; i<KMAXCARTAS-1; i++){
+                    for(int j=0; j<KMAXCARTAS-1; j++){
+                        for(int k=0; k<KMAXCARTAS-1; k++){
+                            if(usu.cartasu[i].vida==usu.cartasu[j].vida && usu.cartasu[i].vida==usu.cartasu[k].vida){
+                                usu.cartasu[i].vida=usu.cartasu[i].vida-1;
+                                usu.cartasu[j].vida=usu.cartasu[j].vida+1;
+                            }
+                            if(usu.cartasu[j].vida == usu.cartasu[k].vida){
+                                usu.cartasu[j].vida=usu.cartasu[j].vida-1;
+                                usu.cartasu[k].vida=usu.cartasu[k].vida+1;
+                            }
+                        }
                     }
+                }
+            }while(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida || usu.cartasu[0].vida==usu.cartasu[3].vida || usu.cartasu[1].vida==usu.cartasu[2].vida);
+        }
+        if(maquina==true && usuario==false){
+            do{
+                for(int i=0; i<KMAXCARTAS-1; i++){
+                    for(int j=0; j<KMAXCARTAS-1; j++){
+                        for(int k=0; k<KMAXCARTAS-1; k++){
+                            if(maq.cartasm[i].vida==maq.cartasm[j].vida && maq.cartasm[i].vida==maq.cartasm[k].vida){
+                                maq.cartasm[i].vida=maq.cartasm[i].vida-1;
+                                maq.cartasm[j].vida=maq.cartasm[j].vida+1;
+                            }
+                            if(maq.cartasm[j].vida == maq.cartasm[k].vida){
+                                maq.cartasm[j].vida=maq.cartasm[j].vida-1;
+                                maq.cartasm[k].vida=maq.cartasm[k].vida+1;
+                            }
+                        }
+                    }
+                }
+            }while(maq.cartasm[0].vida==maq.cartasm[1].vida || maq.cartasm[0].vida==maq.cartasm[2].vida || maq.cartasm[1].vida==maq.cartasm[2].vida);
+        }
+    }
+    else{
+        if( usuario==true && maquina==false){
+            for(int i=0; i<KMAXCARTAS-1; i++){
+                for(int j=0; j<KMAXCARTAS-1; j++){
+                    for(int k=0; k<KMAXCARTAS-1; k++){
+                            if(usu.cartasu[i].vida==0 && usu.cartasu[j].ataque==0){
+                                usu.cartasu[i].vida=0;
+                                usu.cartasu[j].vida=0;
+                            }
+                            if( usu.cartasu[i].vida==0 && usu.cartasu[k].vida==0){
+                                usu.cartasu[i].vida=0;
+                                usu.cartasu[k].vida=0;
+                            }
+                            if(usu.cartasu[j].ataque==0 && usu.cartasu[k].vida==0){
+                                usu.cartasu[j].vida=0;
+                                usu.cartasu[k].vida=0;
+                            }
+                        }
                 }
             }
         }
-    }while(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida || usu.cartasu[0].vida==usu.cartasu[3].vida || usu.cartasu[1].vida==usu.cartasu[2].vida);
-    
+        if(maquina==true && usuario==false){
+            for(int i=0; i<KMAXCARTAS-1; i++){
+                for(int j=0; j<KMAXCARTAS-1; j++){
+                    for(int k=0; k<KMAXCARTAS-1; k++){
+                            if(maq.cartasm[i].vida==0 && maq.cartasm[j].ataque==0){
+                                maq.cartasm[i].vida=0;
+                                maq.cartasm[j].vida=0;
+                            }
+                            if( maq.cartasm[i].vida==0 && maq.cartasm[k].vida==0){
+                                maq.cartasm[i].vida=0;
+                                maq.cartasm[k].vida=0;
+                            }
+                            if(maq.cartasm[j].ataque==0 && maq.cartasm[k].vida==0){
+                                maq.cartasm[j].vida=0;
+                                maq.cartasm[k].vida=0;
+                            }
+                        }
+                }
+            }
+        }
+    }
  }
 
 
 // Funcion que muestra lo que puede hacer el usuario
 void showTurnUsu(TUsuario &usu, TMaquina &maq) {
     if(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida || usu.cartasu[0].vida==usu.cartasu[3].vida || usu.cartasu[1].vida==usu.cartasu[2].vida){
-        correccion(usu, maq);
+        correccion(true,false,usu, maq,true);
+    }
+    if( maq.cartasm[0].vida==maq.cartasm[1].vida || maq.cartasm[0].vida==maq.cartasm[2].vida || maq.cartasm[1].vida==maq.cartasm[2].vida){
+        correccion(false,true,usu, maq,true);
+    }
+    if( maq.cartasm[0].vida==0 && maq.cartasm[1].vida==0 && maq.cartasm[2].vida==0 || usu.cartasu[0].vida==0 && usu.cartasu[1].vida==0 || usu.cartasu[0].vida==0 && usu.cartasu[2].vida==0 || usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0){
+        correccion(true,false,usu, maq,false);
+    }
+    if(usu.cartasu[0].vida==0 && usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0 || maq.cartasm[0].vida==0 && maq.cartasm[1].vida==0 || maq.cartasm[0].vida==0 && maq.cartasm[2].vida==0 || maq.cartasm[1].vida==0 && maq.cartasm[2].vida==0){
+        correccion(false,true,usu, maq,false);
     }
     cout<<"Sus cartas   Las de la Maquina"<<endl;
     for(int i=0; i<KMAXCARTAS-1;i++){
@@ -109,7 +186,7 @@ void magia(){
             break;
         case 3: cout<<"Se te elimina una carta automaticamente"<<endl;
             break;
-        case 4: cout<<"El enemigo tiene -3 de vida"<<endl;
+        case 4: cout<<"El enemigo tiene +3 de vida"<<endl;
             break;
     }
 }
@@ -180,7 +257,7 @@ void attack(TUsuario &usu, TMaquina &maq,int &contador){
             error(ERR_NUMBER);
             mal=false;
         }
-    }while(mal!=true);
+    }while(mal!=true || option==0);
     operaciones(usu,maq);
     contador++;
 }
