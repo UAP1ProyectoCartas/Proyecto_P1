@@ -145,6 +145,18 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
         }
  }
 
+ void mapa(TUsuario &usu, TMaquina &maq){
+    cout<<"Sus cartas   Las de la Maquina"<<endl;
+    for(int i=0; i<KMAXCARTAS-1;i++){
+        cout<<usu.cartasu[i].vida<<" ";
+    }
+    cout<<"         ";
+    for(int i=0;i<KMAXCARTAS-1;i++){
+        cout<<maq.cartasm[i].vida<<" ";
+    }
+    cout<<endl;
+ }
+
 
 // Funcion que muestra lo que puede hacer el usuario
 void showTurnUsu(TUsuario &usu, TMaquina &maq) {
@@ -160,16 +172,9 @@ void showTurnUsu(TUsuario &usu, TMaquina &maq) {
     if((maq.cartasm[0].vida==maq.cartasm[1].vida && maq.cartasm[0].vida!=0 && maq.cartasm[1].vida!=0) || (maq.cartasm[0].vida==maq.cartasm[2].vida && maq.cartasm[0].vida!=0 && maq.cartasm[2].vida!=0) || (maq.cartasm[1].vida==maq.cartasm[2].vida && maq.cartasm[1].vida!=0 && maq.cartasm[2].vida!=0)){
         correccionnumeros(false,true,usu, maq);
     }
+
+    mapa(usu, maq);
     
-    cout<<"Sus cartas   Las de la Maquina"<<endl;
-    for(int i=0; i<KMAXCARTAS-1;i++){
-        cout<<usu.cartasu[i].vida<<" ";
-    }
-    cout<<"         ";
-    for(int i=0;i<KMAXCARTAS-1;i++){
-        cout<<maq.cartasm[i].vida<<" ";
-    }
-    cout<<endl;
     if(usu.magica==true){
         cout << "Que vas a querer hacer?" << endl
        << "1- Atacar" << endl
@@ -201,7 +206,7 @@ void magia(){
 }
 
 // Donde se haran todos los calculos de los ataques y de las defensas
-void operaciones(TUsuario &usu, TMaquina &maq){
+void operaciones(TUsuario &usu, TMaquina &maq, int &contador){
     int resultado;
     bool dead;
     if(usu.cartasu[3].vida>=maq.cartasm[3].vida){
@@ -227,7 +232,10 @@ void operaciones(TUsuario &usu, TMaquina &maq){
     }
     if(dead==true){
         cout<<"Has derribado una carta"<<endl;
+        contador++;
     }
+    mapa(usu, maq);
+
 }
 
 void usomagico(TUsuario &usu, TMaquina &maq){
@@ -267,8 +275,7 @@ void attack(TUsuario &usu, TMaquina &maq,int &contador){
             mal=false;
         }
     }while(mal!=true || option==0);
-    operaciones(usu,maq);
-    contador++;
+    operaciones(usu,maq,contador);
 }
 
 
@@ -400,8 +407,9 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador){
             if(maq.vida!=0){
                 ataqueia(usu,maq);
             }
-        }while(maq.vida!=0 || usu.vida!=0);
+        }while((usu.vida!=0 || maq.vida!=0) || contador!=3);
 }
+
 
 void showRulesMenu() {
   cout << "[REGLAS]" << endl
