@@ -145,6 +145,21 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
         }
  }
 
+ void ganarperder(bool ganado, bool perdido, TUsuario &usu, TMaquina &maq){
+    if(ganado==true){
+        cout<<"Felicidades, has ganado el juego." << endl;
+        cout<<"Este ha sido el resultado:" << endl;
+        cout<< "Vida del jugador: " << usu.vida << endl;
+        cout<< "Vida de la maquina: "<< maq.vida << endl;
+    }
+    if(perdido==true){
+        cout<<"Lo siento, has perdido el juego." << endl;
+        cout<<"Este ha sido el resultado:" << endl;
+        cout<< "Vida del jugador: " << usu.vida << endl;
+        cout<< "Vida de la maquina: "<< maq.vida << endl;
+    }
+ }
+
  void mapa(TUsuario &usu, TMaquina &maq){
     cout<<"Sus cartas   Las de la Maquina"<<endl;
     for(int i=0; i<KMAXCARTAS-1;i++){
@@ -191,7 +206,7 @@ void showTurnUsu(TUsuario &usu, TMaquina &maq) {
 }
 
 // Funcion que muestra los diferentes poderes de la magia
-void magia(){
+int magia(){
     int magic=rand() % 5 + 1;
     switch(magic){
         case 1: cout<<"Tu poder otorga a una carta tuya +2 de Ataque"<<endl;
@@ -203,12 +218,12 @@ void magia(){
         case 4: cout<<"El enemigo tiene +3 de vida"<<endl;
             break;
     }
+    return magic;
 }
 
 // Donde se haran todos los calculos de los ataques y de las defensas
 void operaciones(TUsuario &usu, TMaquina &maq, int &contador){
     int resultado;
-    bool dead;
     if(usu.cartasu[3].vida>=maq.cartasm[3].vida){
         resultado=0;
         maq.vida=maq.vida-maq.cartasm[3].vida;
@@ -219,23 +234,21 @@ void operaciones(TUsuario &usu, TMaquina &maq, int &contador){
     }
         
     cout<<"Has hecho un ataque de "<<usu.cartasu[3].vida<<" de ATK. Con lo cual ahora a la carta enemiga le queda de vida: "<<resultado<<endl;
-    
-    for(int i=0;i<KMAXCARTAS-1;i++){
-        if(maq.cartasm[3].vida==usu.cartasu[3].vida+resultado && maq.cartasm[i].vida==maq.cartasm[3].vida){
-            maq.cartasm[i].vida=resultado;
-            dead=false;
-        }
-        if(resultado==0 && usu.cartasu[3].vida>=maq.cartasm[3].vida && maq.cartasm[i].vida==maq.cartasm[3].vida){
-            maq.cartasm[i].vida=resultado;
-            dead=true;
-        }
-    }
-    if(dead==true){
+    if(resultado==0){
         cout<<"Has derribado una carta"<<endl;
         contador++;
     }
-    mapa(usu, maq);
 
+    for(int i=0;i<KMAXCARTAS-1;i++){
+        if(maq.cartasm[3].vida==usu.cartasu[3].vida+resultado && maq.cartasm[i].vida==maq.cartasm[3].vida){
+            maq.cartasm[i].vida=resultado;
+        }
+        if(resultado==0 && usu.cartasu[3].vida>=maq.cartasm[3].vida && maq.cartasm[i].vida==maq.cartasm[3].vida){
+            maq.cartasm[i].vida=resultado;
+        }
+    }
+   
+    mapa(usu, maq);
 }
 
 void usomagico(TUsuario &usu, TMaquina &maq){
@@ -302,34 +315,33 @@ int maxmaq(TMaquina &maq){
 
 
 // Funcion donde la maquina elegirá que carta atacar y con cual
-void ataqueia(TUsuario &usu, TMaquina &maq){
+void ataqueia(TUsuario &usu, TMaquina &maq, int &contadorm){
     int aux=0;
     int resultado;
-    bool dead;
     usu.cartasu[3].vida=maxusu(usu);
     maq.cartasm[3].vida=maxmaq(maq);
     cout<<"Turno del enemigo: Te va a atacar con su -> "<<maq.cartasm[3].vida<<" a tu siguiente carta -> "<<usu.cartasu[3].vida<<endl;
-    if(usu.cartasu[3].vida<=maq.cartasm[3].vida){
+    if(maq.cartasm[3].vida>=usu.cartasu[3].vida){
         resultado=0;
         usu.vida=usu.vida-usu.cartasu[3].vida;
     }
     else{
         resultado=usu.cartasu[3].vida-maq.cartasm[3].vida;
-        usu.vida=usu.vida-resultado;
+        usu.vida=usu.vida-maq.cartasm[3].vida;
+    }
+    if(resultado==0){
+        cout<<"Te han derribado una carta"<<endl;
+        contadorm++;
     }
     for(int i=0;i<KMAXCARTAS-1;i++){
         if(usu.cartasu[3].vida==maq.cartasm[3].vida+resultado && usu.cartasu[i].vida==usu.cartasu[3].vida){
             usu.cartasu[i].vida=resultado;
-            dead=false;
         }
         if(resultado==0 && usu.cartasu[3].vida<=maq.cartasm[3].vida && usu.cartasu[i].vida==usu.cartasu[3].vida){
             usu.cartasu[i].vida=resultado;
-            dead=true;
         }
     }
-    if(dead==true){
-        cout<<"Te han derribado una carta"<<endl;
-    }
+    
 }
 // 
 void repartircartas(TUsuario &usu, TMaquina &maq){
@@ -370,7 +382,7 @@ void repartircartas(TUsuario &usu, TMaquina &maq){
     }
 }
 
-void versusmachine(TUsuario &usu, TMaquina &maq, int &contador){
+void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
         maq.vida=20;
         if((rand() % 2)==1){
             usu.magica=false;
@@ -399,15 +411,24 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador){
             cin>>option;
             switch(option){
                 case 1:attack(usu, maq,contador);
+                    if(maq.vida!=0){
+                        ataqueia(usu, maq, contadorm);
+                    }
                     break;
                 case 2: usomagico(usu,maq);
                     break;
                 default:error(ERR_OPTION);
             }
-            if(maq.vida!=0){
-                ataqueia(usu,maq);
-            }
-        }while((usu.vida!=0 || maq.vida!=0) || contador!=3);
+            cout<<endl;
+            
+        }while(contador!=3 && contadorm!=3);
+
+        if(contador==3){
+            ganarperder(true,false,usu,maq);
+        }
+        else{
+            ganarperder(false,true,usu,maq);
+        }
 }
 
 
@@ -454,6 +475,7 @@ int main(){
     TUsuario usu;
     char option;
     int contador=0;
+    int contadorm=0;
     usu.vida=maq.vida=0;
     do{
         srand(time(NULL));
@@ -464,7 +486,7 @@ int main(){
         switch (option) {
             //En vez de crear dos modulos distintos para cada tipo de juego por si lo queremos con o sin magia
             //lo hacemos todo con el mismo modulo con un booleano el cual pasara true o false al modulo y se pondra uno o otro
-          case '1': versusmachine(usu,maq,contador);
+          case '1': versusmachine(usu,maq,contador, contadorm);
              break;
           case '2': rules();
             break;
