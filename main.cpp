@@ -37,7 +37,8 @@ struct TMaquina{
 // Ejemplos de errores que se pueden dar
 enum Error {
     ERR_OPTION,
-    ERR_NUMBER
+    ERR_NUMBER,
+    ERR_MAGIC
 };
 
 // Funcion que muestra los errores
@@ -49,6 +50,9 @@ void error(Error e) {
     case ERR_NUMBER:
       cout << "ERROR: wrong number" << endl;
       break;
+    case ERR_MAGIC:
+        cout << "ERROR: wrong magic" << endl;
+        break;
   }
 }
 
@@ -234,7 +238,7 @@ int switchnature(){
 
 // Funcion que muestra los diferentes poderes de la magia
 int switchmagia(){
-    int magic=rand() % 5 + 1;
+    int magic=rand() % 2 + 1;
     switch(magic){
         case 1: cout<<"Tu poder otorga a una carta tuya +2 de Ataque"<<endl;
             break;
@@ -251,26 +255,26 @@ int switchmagia(){
 // Donde se haran todos los calculos de los ataques y de las defensas
 void operaciones(TUsuario &usu, TMaquina &maq, int &contador){
     int resultado;
-    if(usu.cartasu[3].vida>=maq.cartasm[3].vida){
+    if(usu.cartasu[3].vida+usu.cartasu[3].ataque>=maq.cartasm[3].vida){
         resultado=0;
         maq.vida=maq.vida-maq.cartasm[3].vida;
     }
     else{
-        resultado=maq.cartasm[3].vida-usu.cartasu[3].vida;
-        maq.vida=maq.vida-usu.cartasu[3].vida;
+        resultado=maq.cartasm[3].vida-(usu.cartasu[3].vida+usu.cartasu[3].ataque);
+        maq.vida=maq.vida-usu.cartasu[3].vida+usu.cartasu[3].ataque;
     }
         
-    cout<<"Has hecho un ataque de "<<usu.cartasu[3].vida<<" de ATK. Con lo cual ahora a la carta enemiga le queda de vida: "<<resultado<<endl;
+    cout<<"Has hecho un ataque de "<<usu.cartasu[3].vida+usu.cartasu[3].ataque<<" de ATK. Con lo cual ahora a la carta enemiga le queda de vida: "<<resultado<<endl;
     if(resultado==0){
         cout<<"Has derribado una carta"<<endl;
         contador++;
     }
 
     for(int i=0;i<KMAXCARTAS-1;i++){
-        if(maq.cartasm[3].vida==usu.cartasu[3].vida+resultado && maq.cartasm[i].vida==maq.cartasm[3].vida){
+        if(maq.cartasm[3].vida==usu.cartasu[3].vida+usu.cartasu[3].ataque+resultado && maq.cartasm[i].vida==maq.cartasm[3].vida){
             maq.cartasm[i].vida=resultado;
         }
-        if(resultado==0 && usu.cartasu[3].vida>=maq.cartasm[3].vida && maq.cartasm[i].vida==maq.cartasm[3].vida){
+        if(resultado==0 && usu.cartasu[3].vida+usu.cartasu[3].ataque>=maq.cartasm[3].vida && maq.cartasm[i].vida==maq.cartasm[3].vida){
             maq.cartasm[i].vida=resultado;
         }
     }
@@ -280,22 +284,41 @@ void operaciones(TUsuario &usu, TMaquina &maq, int &contador){
 
 void usonaturaleza(TMaquina &maq, int &type_nature){
     switch(type_nature){
-
     }
 }
 
 
-void usomagico(TUsuario &usu, int &type_magic){
+void usomagico(TUsuario &usu, int &type_magic, int &contador){
+    int option;
     switch(type_magic){
-        case 1: usu.cartasu[3].vida=usu.cartasu[3].vida+2;
+        case 1: cout<<"Que carta quieres que aumente su ataque? ("<<usu.cartasu[0].vida<<" "<<usu.cartasu[1].vida<<" "<<usu.cartasu[2].vida<<") ->";
+                cin>>option;
+                if((option==usu.cartasu[0].vida) || (option==usu.cartasu[1].vida) || (option==usu.cartasu[2].vida)){
+                    usu.cartasu[3].vida=option;
+                }
+                for(int i=0;i<KMAXCARTAS-1;i++){
+                    if(usu.cartasu[i].vida==usu.cartasu[3].vida){
+                        usu.cartasu[i].ataque=usu.cartasu[i].ataque+2;
+                    }
+                }
             break;
-        case 2: usu.cartasu[3].vida=usu.cartasu[3].vida+1;
+        case 2: cout<<"Que carta quieres que aumente su vida? ("<<usu.cartasu[0].vida<<" "<<usu.cartasu[1].vida<<" "<<usu.cartasu[2].vida<<") ->";
+                cin>>option;
+                if((option==usu.cartasu[0].vida) || (option==usu.cartasu[1].vida) || (option==usu.cartasu[2].vida)){
+                    usu.cartasu[3].vida=option;
+                }
+                for(int i=0;i<KMAXCARTAS-1;i++){
+                    if(usu.cartasu[i].vida==usu.cartasu[3].vida){
+                        usu.cartasu[i].vida=usu.cartasu[i].vida+1;
+                    }
+                }
             break;
-        case 3: usu.cartasu[3].vida=0;
+        case 3: 
             break;
         case 4: 
             break;
     }
+    contador++;
 }
 
 
@@ -311,6 +334,11 @@ void attack(TUsuario &usu, TMaquina &maq,int &contador){
         if((option==usu.cartasu[0].vida) || (option==usu.cartasu[1].vida) || (option==usu.cartasu[2].vida)){
             mal=true;
             usu.cartasu[3].vida=option;
+            for(int i=0;i<KMAXCARTAS-1;i++){
+                if(usu.cartasu[i].vida==usu.cartasu[3].vida){
+                    usu.cartasu[3].ataque=usu.cartasu[i].ataque;
+                }
+            }
         }
         else{
             error(ERR_NUMBER);
@@ -389,26 +417,27 @@ void ataqueia(TUsuario &usu, TMaquina &maq, int &contadorm){
 void repartircartas(TUsuario &usu, TMaquina &maq){
     
     for(int i=0;i<KMAXCARTAS-1;i++){
-        usu.cartasu[i].ataque=usu.cartasu[i].vida=rand() % 7 + 1;
-        
+        usu.cartasu[i].vida=rand() % 7 + 1;
+        usu.cartasu[i].ataque=0;
         do{
             if(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida){
-                usu.cartasu[0].ataque=usu.cartasu[0].vida=rand() % 7 + 1;
+                usu.cartasu[0].vida=rand() % 7 + 1;
             } 
             if(usu.cartasu[1].vida==usu.cartasu[2].vida){
-                usu.cartasu[1].ataque=usu.cartasu[1].vida=rand() % 7 + 1;
+                usu.cartasu[1].vida=rand() % 7 + 1;
             }
         }while(usu.cartasu[0].vida==usu.cartasu[1].vida && usu.cartasu[0].vida==usu.cartasu[2].vida && usu.cartasu[1].vida==usu.cartasu[2].vida);
     }
     
     for(int i=0;i<KMAXCARTAS-1;i++){
-        maq.cartasm[i].ataque=maq.cartasm[i].vida=rand() % 7 + 1;
+        maq.cartasm[i].vida=rand() % 7 + 1;
+        maq.cartasm[i].ataque=0;
         do{
             if(maq.cartasm[0].vida==maq.cartasm[1].vida || maq.cartasm[0].vida==maq.cartasm[2].vida){
-                maq.cartasm[0].ataque=maq.cartasm[0].vida=rand() % 7 + 1;
+                maq.cartasm[0].vida=rand() % 7 + 1;
             } 
             if(maq.cartasm[1].vida==maq.cartasm[2].vida){
-                maq.cartasm[2].ataque=maq.cartasm[2].vida=rand() % 7 + 1;
+                maq.cartasm[2].vida=rand() % 7 + 1;
             }
         }while(maq.cartasm[0].vida==maq.cartasm[1].vida && maq.cartasm[0].vida==maq.cartasm[2].vida && maq.cartasm[1].vida==maq.cartasm[2].vida);
         
@@ -425,7 +454,7 @@ void repartircartas(TUsuario &usu, TMaquina &maq){
 }
 
 void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
-        int typemagic,typenature;
+        int typemagic,typenature,cont=0;
         if((rand() % 2)==1){
             usu.magica=false;
             cout<<"No tienes ninguna carta mágica"<<endl;
@@ -435,8 +464,8 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
             usu.magica=true;
             maq.naturaleza=true;
             cout<<"Tienes solo 1 carta mágica"<<endl;
-            switchmagia();
-            switchnature();
+            typemagic=switchmagia();
+            typenature=switchnature();
             cout<<endl;
         }
         repartircartas(usu,maq);
@@ -454,12 +483,16 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
                         ataqueia(usu, maq, contadorm);
                     }
                     break;
-                case 2: usomagico(usu,typemagic);
+                case 2: if(cont==0){
+                            usomagico(usu,typemagic,cont);
+                        }
+                        else{
+                            error(ERR_MAGIC);
+                        }
                     break;
                 default:error(ERR_OPTION);
             }
             cout<<endl;
-            
         }while(contador!=3 && contadorm!=3);
 
         if(contador==3){
