@@ -32,6 +32,7 @@ struct TMaquina{
     int opcion;
     int vida;
     char naturaleza;
+    bool usado;
     TCarta cartasm[KMAXCARTAS];
 };
 
@@ -58,8 +59,8 @@ void error(Error e) {
 }
 
 // Función auxiliar para ayudar a que no hayan errores internos en el programa
-void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
-    if(usuario==true && maquina==false){
+void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
+    if(correcto ==true){
         do{
             for(int i=0; i<KMAXCARTAS-1; i++){
                 for(int j=0; j<KMAXCARTAS-1; j++){
@@ -81,7 +82,7 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
             }
         }while(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida || usu.cartasu[0].vida==usu.cartasu[3].vida || usu.cartasu[1].vida==usu.cartasu[2].vida);
     }
-    if(maquina==true && usuario==false){
+    if(correcto==false){
         do{
             for(int i=0; i<KMAXCARTAS-1; i++){
                 for(int j=0; j<KMAXCARTAS-1; j++){
@@ -106,8 +107,8 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
  }
 
 
- void correccionzeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
-    if(usuario==true && maquina==false){
+ void correccionzeros(bool correcto,TUsuario &usu, TMaquina &maq){
+    if(correcto==true){
             for(int i=0; i<KMAXCARTAS-1; i++){
                 for(int j=0; j<KMAXCARTAS-1; j++){
                     for(int k=0; k<KMAXCARTAS-1; k++){
@@ -127,7 +128,7 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
                 }
             }
         }
-    if(maquina==true && usuario==false){
+    if(correcto==false){
         for(int i=0; i<KMAXCARTAS-1; i++){
             for(int j=0; j<KMAXCARTAS-1; j++){
                 for(int k=0; k<KMAXCARTAS-1; k++){
@@ -149,19 +150,17 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
         }
  }
 
- void ganarperder(bool ganado, bool perdido, TUsuario &usu, TMaquina &maq){
+ void ganarperder(bool ganado,TUsuario &usu, TMaquina &maq){
     if(ganado==true){
         cout<<"Felicidades, has ganado el juego." << endl;
         cout<<"Este ha sido el resultado:" << endl;
-        cout<< "Vida del jugador: " << usu.vida << endl;
-        cout<< "Vida de la maquina: "<< maq.vida << endl;
     }
-    if(perdido==true){
+    else{
         cout<<"Lo siento, has perdido el juego." << endl;
         cout<<"Este ha sido el resultado:" << endl;
-        cout<< "Vida del jugador: " << usu.vida << endl;
-        cout<< "Vida de la maquina: "<< maq.vida << endl;
     }
+    cout<< "Vida del jugador: " << usu.vida << endl;
+    cout<< "Vida de la maquina: "<< maq.vida << endl;
  }
 
  void mapa(TUsuario &usu, TMaquina &maq){
@@ -190,30 +189,27 @@ void correccionnumeros(bool usuario, bool maquina,TUsuario &usu, TMaquina &maq){
 // Funcion que muestra lo que puede hacer el usuario
 void showTurnUsu(TUsuario &usu, TMaquina &maq) {
     if(maq.cartasm[0].vida==0 && maq.cartasm[1].vida==0 && maq.cartasm[2].vida==0 || usu.cartasu[0].vida==0 && usu.cartasu[1].vida==0 || usu.cartasu[0].vida==0 && usu.cartasu[2].vida==0 || usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0 || usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0 && usu.cartasu[0].vida==0){
-        correccionzeros(true,false,usu, maq);
+        correccionzeros(true,usu, maq);
     }
     if(usu.cartasu[0].vida==0 && usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0 || maq.cartasm[0].vida==0 && maq.cartasm[1].vida==0 || maq.cartasm[0].vida==0 && maq.cartasm[2].vida==0 || maq.cartasm[1].vida==0 && maq.cartasm[2].vida==0 || maq.cartasm[0].vida==0 && maq.cartasm[1].vida==0 && maq.cartasm[2].vida==0){
-        correccionzeros(false,true,usu, maq);
+        correccionzeros(false,usu, maq);
     }
     if((usu.cartasu[0].vida==usu.cartasu[1].vida && usu.cartasu[0].vida!=0 && usu.cartasu[1].vida!=0) || (usu.cartasu[0].vida==usu.cartasu[2].vida && usu.cartasu[0].vida!=0 && usu.cartasu[2].vida!=0) || (usu.cartasu[1].vida==usu.cartasu[2].vida && usu.cartasu[1].vida!=0 && usu.cartasu[2].vida!=0)){
-        correccionnumeros(true,false,usu, maq);
+        correccionnumeros(true,usu, maq);
     }
     if((maq.cartasm[0].vida==maq.cartasm[1].vida && maq.cartasm[0].vida!=0 && maq.cartasm[1].vida!=0) || (maq.cartasm[0].vida==maq.cartasm[2].vida && maq.cartasm[0].vida!=0 && maq.cartasm[2].vida!=0) || (maq.cartasm[1].vida==maq.cartasm[2].vida && maq.cartasm[1].vida!=0 && maq.cartasm[2].vida!=0)){
-        correccionnumeros(false,true,usu, maq);
+        correccionnumeros(false,usu, maq);
     }
 
     mapa(usu, maq);
-    
+    cout << "Que vas a querer hacer?" << endl
+    << "1- Atacar" << endl;
     if(usu.magica==true){
-        cout << "Que vas a querer hacer?" << endl
-       << "1- Atacar" << endl
-       << "2- Usar magia" << endl
+       cout<< "2- Usar magia" << endl
        << "Opcion:";
     }
     else{
-        cout << "Que vas a querer hacer?" << endl
-       << "1- Atacar" << endl
-       << "Opcion:";
+       cout<< "Opcion:";
     }
     cout<<usu.vida<<"   "<<maq.vida<<endl;
   
@@ -239,6 +235,16 @@ int maxmaq(TMaquina &maq){
     return max;
 }
 
+int minmaq(TMaquina &maq){
+    int min=100;
+    for(int i=0; i<KMAXCARTAS-1; i++){
+        if(maq.cartasm[i].vida<min){
+            min=maq.cartasm[i].vida;
+        }
+    }
+    return min;
+}
+
 // Funcion que muestra los diferentes poderes de la magia
 int switchmagia(){
     int magic=rand() % 4 + 1;
@@ -255,7 +261,7 @@ int switchmagia(){
     return magic;
 }
 
-void usomagico(TUsuario &usu, int &type_magic, int &contador){
+void usomagico(TUsuario &usu, int &type_magic, int &contador, TMaquina &maq){
     int option;
     switch(type_magic){
         case 1: cout<<"Que carta quieres que aumente su ataque? ("<<usu.cartasu[0].vida<<" "<<usu.cartasu[1].vida<<" "<<usu.cartasu[2].vida<<") ->";
@@ -293,6 +299,7 @@ void usomagico(TUsuario &usu, int &type_magic, int &contador){
                         break;
                     }
                 }
+                mapa( usu, maq);
             break;
     }
     contador++;
@@ -316,15 +323,15 @@ char switchnature(){
     return nature;
 }
 
-void usonaturaleza(TMaquina &maq){
-    TUsuario usu;
+void usonaturaleza(TMaquina &maq, TUsuario &usu){
     int elegido;
     elegido=maxusu(usu); 
+    int minimo;
+    minimo= minmaq(maq);
     switch(maq.naturaleza){
         case 'a': for(int i=0;i<KMAXCARTAS-1;i++){
-                    if(maq.cartasm[i].vida==1){
+                    if(maq.cartasm[i].vida==minimo){
                         maq.cartasm[i].vida=maq.cartasm[i].vida+3;
-                        break;
                     }
                 }
                 cout<< "El enemigo ha usado su naturaleza y ha aumentado la vida de una carta en 3" << endl;
@@ -344,6 +351,7 @@ void usonaturaleza(TMaquina &maq){
                         usu.cartasu[i].vida=usu.cartasu[i].vida/2;
                     }
                 }
+                mapa(usu,maq);
          break;
         case 'd': for(int i=0;i<KMAXCARTAS-1;i++){
                     maq.cartasm[i].ataque=maq.cartasm[i].ataque+1;
@@ -367,7 +375,7 @@ void operaciones(TUsuario &usu, TMaquina &maq, int &contador){
         maq.vida=maq.vida-usu.cartasu[3].vida+usu.cartasu[3].ataque;
     }
         
-    cout<<"Has hecho un ataque de "<<usu.cartasu[3].vida+usu.cartasu[3].ataque<<" de ATK. Con lo cual ahora a la carta enemiga le queda de vida: "<<resultado<<endl;
+    cout<<"Has hecho un ataque de "<<usu.cartasu[3].vida << "+" << usu.cartasu[3].ataque<<" de ATK. Con lo cual ahora a la carta enemiga le queda de vida: "<<resultado<<endl;
     if(resultado==0){
         cout<<"Has derribado una carta"<<endl;
         contador++;
@@ -435,7 +443,7 @@ void ataqueia(TUsuario &usu, TMaquina &maq, int &contadorm){
             maq.cartasm[3].ataque=maq.cartasm[i].ataque;
         }
     }
-    cout<<"Turno del enemigo: Te va a atacar con su -> "<<maq.cartasm[3].vida+maq.cartasm[3].ataque<<" a tu siguiente carta -> "<<usu.cartasu[3].vida<<endl;
+    cout<<"Turno del enemigo: Te va a atacar con su -> "<<maq.cartasm[3].vida<<"+"<<maq.cartasm[3].ataque<<" a tu siguiente carta -> "<<usu.cartasu[3].vida<<endl;
     if(maq.cartasm[3].vida+maq.cartasm[3].ataque>=usu.cartasu[3].vida){
         resultado=0;
         usu.vida=usu.vida-usu.cartasu[3].vida;
@@ -484,34 +492,19 @@ void repartircartas(TUsuario &usu, TMaquina &maq){
                 maq.cartasm[2].vida=rand() % 7 + 1;
             }
         }while(maq.cartasm[0].vida==maq.cartasm[1].vida && maq.cartasm[0].vida==maq.cartasm[2].vida && maq.cartasm[1].vida==maq.cartasm[2].vida);
-        
-    }
-    for(int i=0;i<KMAXCARTAS-1;i++){
-        usu.vida=usu.vida+usu.cartasu[i].vida;
-    }
-    maq.vida=maq.cartasm[0].vida+maq.cartasm[1].vida+maq.cartasm[2].vida;
-    
-    if(usu.magica==false && ((usu.vida-maq.vida)>=4 || (maq.vida-usu.vida)>=4)){
-        usu.magica=true;
-        maq.naturaleza=true;
     }
 }
 
 void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
         int cont=0;
-        if((rand() % 2)==1){
-            usu.magica=false;
-            cout<<"No tienes ninguna carta mágica"<<endl;
-            cout<<endl;
-        }
-        else{
-            usu.magica=true;
-            maq.naturaleza=true;
-            cout<<"Tienes solo 1 carta mágica"<<endl;
-            usu.tipo_magia=switchmagia();
-            maq.naturaleza=switchnature();
-            cout<<endl;
-        }
+        usu.magica=true;
+        maq.usado=true;
+
+        cout<<"Tienes solo 1 carta mágica"<<endl;
+        usu.tipo_magia=switchmagia();
+        maq.naturaleza=switchnature();
+        cout<<endl;
+
         repartircartas(usu,maq);
         cout<<"Se reparten 3 cartas"<<endl;    
         do{
@@ -520,15 +513,20 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
             cin>>option;
             switch(option){
                 case 1:attack(usu, maq,contador);
-                    if(maq.vida<=6){
-                        usonaturaleza(maq);
+                    if(maq.vida<=6 && maq.usado==true){
+                        usonaturaleza(maq,usu);
+                        maq.usado=false;
                     }
                     if(maq.vida!=0){
                         ataqueia(usu, maq, contadorm);
                     }
                     break;
-                case 2: if(cont==0){
-                            usomagico(usu,usu.tipo_magia,cont);
+                case 2: if(usu.tipo_magia==4 && usu.cartasu[0].vida!=0 && usu.cartasu[1].vida!=0 && usu.cartasu[2].vida!=0){
+                            cout<<"No puedes usar la magia ahora"<<endl;
+                        }
+                        if(cont==0 && usu.magica==true){
+                            usomagico(usu,usu.tipo_magia,cont,maq);
+                            usu.magica=false;
                             if(maq.vida!=0){
                                 ataqueia(usu, maq, contadorm);
                             }
@@ -540,13 +538,16 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
                 default:error(ERR_OPTION);
             }
             cout<<endl;
+            usu.vida=usu.cartasu[0].vida+usu.cartasu[1].vida+usu.cartasu[2].vida;
+            maq.vida=maq.cartasm[0].vida+maq.cartasm[1].vida+maq.cartasm[2].vida;
+
         }while(contador!=3 && contadorm!=3);
 
         if(contador==3){
-            ganarperder(true,false,usu,maq);
+            ganarperder(true,usu,maq);
         }
         else{
-            ganarperder(false,true,usu,maq);
+            ganarperder(false,usu,maq);
         }
 }
 
@@ -583,7 +584,7 @@ void rules(){
 
 void showMainMenu() {
   cout << "[MENU]" << endl
-       << "1- Con Poderes" << endl
+       << "1- Contra la Maquina" << endl
        << "2- Reglas" << endl
        << "s- Salir"<< endl
        << "Opcion:";
@@ -593,8 +594,7 @@ int main(){
     TMaquina maq;
     TUsuario usu;
     char option;
-    int contador=0;
-    int contadorm=0;
+    int contador=0, contadorm=0;
     usu.vida=maq.vida=0;
     do{
         srand(time(NULL));
