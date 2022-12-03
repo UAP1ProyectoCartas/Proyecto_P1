@@ -8,9 +8,6 @@ using namespace std;
 
 const int KMAXCHAR = 100;
 const int KMAXCARTAS = 4;
-const string RULE_1 = "EL juego consiste en una pelea de numeros, al principio se repartiran 3 cartas a cada jugador. Cada carta tendra su VIDA Y ATAQUE, el cual es igual a su numero. Y cada jugador al principio de cada partida tendra 10 de vida. Mediante ataques de las cartas en el momento en que uno de los dos pierda las 3 cartas que tiene acabara la partida perdiendo.";
-const string RULE_2 = "Enter list name: ";
-const string RULE_3 = "Enter list name: ";
 
 // Estructura de la carta
 struct TCarta{
@@ -80,7 +77,7 @@ void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
                     }
                 }
             }
-        }while(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida || usu.cartasu[0].vida==usu.cartasu[3].vida || usu.cartasu[1].vida==usu.cartasu[2].vida);
+        }while(usu.cartasu[0].vida==usu.cartasu[1].vida || usu.cartasu[0].vida==usu.cartasu[2].vida || usu.cartasu[1].vida==usu.cartasu[2].vida);
     }
     if(correcto==false){
         do{
@@ -106,7 +103,7 @@ void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
     }
  }
 
-
+// Función auxiliar para que no hayan errores en el juego
  void correccionzeros(bool correcto,TUsuario &usu, TMaquina &maq){
     if(correcto==true){
             for(int i=0; i<KMAXCARTAS-1; i++){
@@ -150,6 +147,7 @@ void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
         }
  }
 
+ // Menú final del juego que nos muestra quien ha ganado y perdido
  void ganarperder(bool ganado,TUsuario &usu, TMaquina &maq){
     if(ganado==true){
         cout<<"Felicidades, has ganado el juego." << endl;
@@ -163,6 +161,7 @@ void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
     cout<< "Vida de la maquina: "<< maq.vida << endl;
  }
 
+// Mapa del juego donde podemos observar la vida y ataque adicional de cada una de las cartas
  void mapa(TUsuario &usu, TMaquina &maq){
     cout<<"Sus cartas   Las de la Maquina"<<endl;
     for(int i=0; i<KMAXCARTAS-1;i++){
@@ -215,6 +214,7 @@ void showTurnUsu(TUsuario &usu, TMaquina &maq) {
   
 }
 
+// Funcion que devuelve la carta del usuario con más vida
 int maxusu(TUsuario &usu){
     int max=0;
     for(int i=0; i<KMAXCARTAS-1; i++){
@@ -225,6 +225,7 @@ int maxusu(TUsuario &usu){
     return max;
 }
 
+// Funcion que devuelve la carta de la maquina con más vida
 int maxmaq(TMaquina &maq){
     int max=0;
     for(int i=0; i<KMAXCARTAS-1; i++){
@@ -235,6 +236,7 @@ int maxmaq(TMaquina &maq){
     return max;
 }
 
+// Funcion que devuelve la carta de la maquina con menos vida
 int minmaq(TMaquina &maq){
     int min=100;
     for(int i=0; i<KMAXCARTAS-1; i++){
@@ -245,7 +247,7 @@ int minmaq(TMaquina &maq){
     return min;
 }
 
-// Funcion que muestra los diferentes poderes de la magia
+// Devuelve el tipo de magia que nos ha tocado
 int switchmagia(){
     int magic=rand() % 4 + 1;
     switch(magic){
@@ -261,9 +263,10 @@ int switchmagia(){
     return magic;
 }
 
-void usomagico(TUsuario &usu, int &type_magic, int &contador, TMaquina &maq){
+// Módulo para cuando queramos usar los diferentes tipos de magia
+void usomagico(TUsuario &usu,int &contador, TMaquina &maq){
     int option;
-    switch(type_magic){
+    switch(usu.tipo_magia){
         case 1: cout<<"Que carta quieres que aumente su ataque? ("<<usu.cartasu[0].vida<<" "<<usu.cartasu[1].vida<<" "<<usu.cartasu[2].vida<<") ->";
                 cin>>option;
                 if((option==usu.cartasu[0].vida) || (option==usu.cartasu[1].vida) || (option==usu.cartasu[2].vida)){
@@ -305,6 +308,7 @@ void usomagico(TUsuario &usu, int &type_magic, int &contador, TMaquina &maq){
     contador++;
 }
 
+// Devuelvela naturaleza que obtendrá la maquina
 char switchnature(){
     char nature='a' + rand() % 4; 
     switch(nature){
@@ -323,6 +327,7 @@ char switchnature(){
     return nature;
 }
 
+// Módulo para cuando queramos usar los diferentes tipos de naturaleza
 void usonaturaleza(TMaquina &maq, TUsuario &usu){
     int elegido;
     elegido=maxusu(usu); 
@@ -466,6 +471,7 @@ void ataqueia(TUsuario &usu, TMaquina &maq, int &contadorm){
     }
 }
 
+// Módulo que da el valor a cada una de las cartas del juego inicialmente
 void repartircartas(TUsuario &usu, TMaquina &maq){
     
     for(int i=0;i<KMAXCARTAS-1;i++){
@@ -495,18 +501,19 @@ void repartircartas(TUsuario &usu, TMaquina &maq){
     }
 }
 
+// Módulo prinicipal del modo de jugar contra la maquina
 void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
         int cont=0;
         usu.magica=true;
         maq.usado=true;
 
-        cout<<"Tienes solo 1 carta mágica"<<endl;
         usu.tipo_magia=switchmagia();
         maq.naturaleza=switchnature();
         cout<<endl;
 
         repartircartas(usu,maq);
-        cout<<"Se reparten 3 cartas"<<endl;    
+        cout<<"Se reparten 3 cartas"<<endl;   
+
         do{
             showTurnUsu(usu, maq);
             int option;
@@ -525,7 +532,7 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
                             cout<<"No puedes usar la magia ahora"<<endl;
                         }
                         if(cont==0 && usu.magica==true){
-                            usomagico(usu,usu.tipo_magia,cont,maq);
+                            usomagico(usu,cont,maq);
                             usu.magica=false;
                             if(maq.vida!=0){
                                 ataqueia(usu, maq, contadorm);
@@ -556,7 +563,8 @@ void showRulesMenu() {
   cout << "[REGLAS]" << endl
        << "1- ¿Como jugar?" << endl
        << "2- Cartas" << endl
-       << "3- Naturaleza" << endl
+       << "3- Magia" << endl
+       << "4- Naturaleza" << endl
        << "v- Volver al menu"<< endl
        << "Opcion:";
 }
@@ -568,11 +576,13 @@ void rules(){
         showRulesMenu();
         cin>>option;
         switch (option) {
-          case '1': cout<<RULE_1<<endl;
+          case '1': cout<<"Se reparten 3 cartas, y un poder o naturaleza a cada jugador. Y mediante las vidas de sus cartas y ataque adicional que pueden obtener deberán derrotar a las cartas de sus contricantes."<<endl;
              break;
-          case '2': cout<<RULE_2<<endl;
+          case '2': cout<<"Cada cartas tiene dos características: La vida (iniciada al principio de cada partida), y el ataque (el ataque en si es la vida de cada carta pero a ese se le puede sumar ataque adicional gracias a la magia o naturaleza)."<<endl;
              break;
-          case '3': cout<<RULE_3<<endl;
+          case '3': cout<<"El jugador obtiene en cada partida un tipo de magia para beneficarse y así poder obtener la victoria. Una vez usada no podrá volver a usarla."<<endl;
+            break;
+          case '4': cout<<"La máquina obtiene en cada partida un tipo de naturaleza el cual le ofrece beneficios a la hora de derrotarnos y acabar la partida ganando."<<endl;
             break;
           case 'v':
              break;
@@ -584,7 +594,7 @@ void rules(){
 
 void showMainMenu() {
   cout << "[MENU]" << endl
-       << "1- Contra la Maquina" << endl
+       << "1- Jugar contra la Maquina" << endl
        << "2- Reglas" << endl
        << "s- Salir"<< endl
        << "Opcion:";
