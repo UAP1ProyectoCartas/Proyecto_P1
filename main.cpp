@@ -210,8 +210,6 @@ void showTurnUsu(TUsuario &usu, TMaquina &maq) {
     else{
        cout<< "Opcion:";
     }
-    cout<<usu.vida<<"   "<<maq.vida<<endl;
-  
 }
 
 // Funcion que devuelve la carta del usuario con más vida
