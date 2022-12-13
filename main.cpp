@@ -181,7 +181,6 @@ void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
         cout<<"("<<maq.cartasm[i].ataque<<")";
     }
     cout<<endl;
-    cout<<endl;
  }
 
 
@@ -546,9 +545,9 @@ void versusmachine(TUsuario &usu, TMaquina &maq, int &contador, int &contadorm){
             usu.vida=usu.cartasu[0].vida+usu.cartasu[1].vida+usu.cartasu[2].vida;
             maq.vida=maq.cartasm[0].vida+maq.cartasm[1].vida+maq.cartasm[2].vida;
 
-        }while(contador!=3 && contadorm!=3);
+        }while(usu.vida!=0 && maq.vida!=0);
 
-        if(contador==3){
+        if(maq.vida==0){
             ganarperder(true,usu,maq);
         }
         else{
@@ -563,8 +562,35 @@ void showRulesMenu() {
        << "2- Cartas" << endl
        << "3- Magia" << endl
        << "4- Naturaleza" << endl
+       << "5- Mapa" << endl
        << "v- Volver al menu"<< endl
        << "Opcion:";
+}
+
+void maparegla(){
+    cout<<endl;
+    cout<<"Sus cartas   Las de la Maquina"<<endl;
+    for(int i=0; i<KMAXCARTAS-1;i++){
+        cout<<'x'<<" ";
+    }
+    cout<<"         ";
+    for(int i=0;i<KMAXCARTAS-1;i++){
+        cout<<'x'<<" ";
+    }
+    
+    cout<<endl;
+    for(int i=0; i<KMAXCARTAS-1;i++){
+        cout<<"("<<'y'<<")";
+    }
+    cout<<"     ";
+    for(int i=0;i<KMAXCARTAS-1;i++){
+        cout<<"("<<'y'<<")";
+    }
+    cout<<endl;
+    cout<<"Las x son las cartas que se juegan, representando su vida y ataque en función de la carta."<<endl;
+    cout<<"Las y son el bonus añadido a las cartas que se consigue a través de las magias. Sólo afectan en el ataque."<<endl;
+    cout<<endl;
+    
 }
 
 
@@ -582,6 +608,7 @@ void rules(){
             break;
           case '4': cout<<"La máquina obtiene en cada partida un tipo de naturaleza el cual le ofrece beneficios a la hora de derrotarnos y acabar la partida ganando."<<endl;
             break;
+          case '5': maparegla();
           case 'v':
              break;
           default:
