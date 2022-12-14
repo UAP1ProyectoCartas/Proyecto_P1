@@ -102,54 +102,82 @@ void error(Error e) {
 // Función auxiliar para ayudar a que no hayan errores internos en el programa
 void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
     if(correcto ==true){
-        do{
-            for(int i=0; i<KMAXCARTAS-1; i++){
-                for(int j=0; j<KMAXCARTAS-1; j++){
-                    for(int k=0; k<KMAXCARTAS-1; k++){
-                        if(usu.cartasu[i].vida==usu.cartasu[j].vida){
-                            usu.cartasu[i].vida=usu.cartasu[i].vida-1;
-                            usu.cartasu[j].vida=usu.cartasu[j].vida+1;
-                        }
-                        if(usu.cartasu[j].vida == usu.cartasu[k].vida){
-                            usu.cartasu[j].vida=usu.cartasu[j].vida-1;
-                            usu.cartasu[k].vida=usu.cartasu[k].vida+1;
-                        }
-                        if(usu.cartasu[i].vida==usu.cartasu[k].vida){
-                            usu.cartasu[i].vida=usu.cartasu[i].vida-1;
-                            usu.cartasu[k].vida=usu.cartasu[k].vida+1;
-                        }
-                        else{
-                            correccionzeros(true, usu, maq);
+        if(usu.cartasu[0].vida==1 && usu.cartasu[1].vida==1 && usu.cartasu[2].vida==0){
+            usu.cartasu[0].vida=usu.cartasu[0].vida-1;
+            usu.cartasu[1].vida=usu.cartasu[1].vida+1;
+        }
+        if(usu.cartasu[0].vida==1 && usu.cartasu[1].vida==0 && usu.cartasu[2].vida==1){
+            usu.cartasu[0].vida=usu.cartasu[0].vida-1;
+            usu.cartasu[2].vida=usu.cartasu[2].vida+1;
+        }
+        if(usu.cartasu[0].vida==0 && usu.cartasu[1].vida==1 && usu.cartasu[2].vida==1){
+            usu.cartasu[1].vida=usu.cartasu[1].vida-1;
+            usu.cartasu[2].vida=usu.cartasu[2].vida+1;
+        }
+        else{
+            do{
+                for(int i=0; i<KMAXCARTAS-1; i++){
+                    for(int j=0; j<KMAXCARTAS-1; j++){
+                        for(int k=0; k<KMAXCARTAS-1; k++){
+                            if(usu.cartasu[i].vida==usu.cartasu[j].vida){
+                                usu.cartasu[i].vida=usu.cartasu[i].vida-1;
+                                usu.cartasu[j].vida=usu.cartasu[j].vida+1;
+                            }
+                            if(usu.cartasu[j].vida == usu.cartasu[k].vida){
+                                usu.cartasu[j].vida=usu.cartasu[j].vida-1;
+                                usu.cartasu[k].vida=usu.cartasu[k].vida+1;
+                            }
+                            if(usu.cartasu[i].vida==usu.cartasu[k].vida){
+                                usu.cartasu[i].vida=usu.cartasu[i].vida-1;
+                                usu.cartasu[k].vida=usu.cartasu[k].vida+1;
+                            }
+                            else{
+                                correccionzeros(true, usu, maq);
+                            }
                         }
                     }
                 }
-            }
-        }while(usu.cartasu[0].vida==usu.cartasu[1].vida|| usu.cartasu[0].vida==usu.cartasu[2].vida|| usu.cartasu[1].vida==usu.cartasu[2].vida);
+            }while(usu.cartasu[0].vida==usu.cartasu[1].vida|| usu.cartasu[0].vida==usu.cartasu[2].vida|| usu.cartasu[1].vida==usu.cartasu[2].vida);
+        } 
     }
     if(correcto==false){
-        do{
-            for(int i=0; i<KMAXCARTAS-1; i++){
-                for(int j=0; j<KMAXCARTAS-1; j++){
-                    for(int k=0; k<KMAXCARTAS-1; k++){
-                        if(maq.cartasm[i].vida==maq.cartasm[j].vida){
-                            maq.cartasm[i].vida=maq.cartasm[i].vida-1;
-                            maq.cartasm[j].vida=maq.cartasm[j].vida+1;
-                        }
-                        if(maq.cartasm[j].vida == maq.cartasm[k].vida){
-                            maq.cartasm[j].vida=maq.cartasm[j].vida-1;
-                            maq.cartasm[k].vida=maq.cartasm[k].vida+1;
-                        }
-                        if(maq.cartasm[i].vida==maq.cartasm[k].vida){
-                            maq.cartasm[i].vida=maq.cartasm[i].vida-1;
-                            maq.cartasm[k].vida=maq.cartasm[k].vida+1;
-                        }
-                        else{
-                            correccionzeros(false, usu, maq);
+        if(maq.cartasm[0].vida==1 && maq.cartasm[1].vida==1 && maq.cartasm[2].vida==0){
+            maq.cartasm[0].vida=maq.cartasm[0].vida-1;
+            maq.cartasm[1].vida=maq.cartasm[1].vida+1;
+        }
+        if(maq.cartasm[0].vida==1 && maq.cartasm[1].vida==0 && maq.cartasm[2].vida==1){
+            maq.cartasm[0].vida=maq.cartasm[0].vida-1;
+            maq.cartasm[2].vida=maq.cartasm[2].vida+1;
+        }
+        if(maq.cartasm[0].vida==0 && maq.cartasm[1].vida==1 && maq.cartasm[2].vida==1){
+            maq.cartasm[1].vida=maq.cartasm[1].vida-1;
+            maq.cartasm[2].vida=maq.cartasm[2].vida+1;
+        }
+        else{
+            do{
+                for(int i=0; i<KMAXCARTAS-1; i++){
+                    for(int j=0; j<KMAXCARTAS-1; j++){
+                        for(int k=0; k<KMAXCARTAS-1; k++){
+                            if(maq.cartasm[i].vida==maq.cartasm[j].vida){
+                                maq.cartasm[i].vida=maq.cartasm[i].vida-1;
+                                maq.cartasm[j].vida=maq.cartasm[j].vida+1;
+                            }
+                            if(maq.cartasm[j].vida == maq.cartasm[k].vida){
+                                maq.cartasm[j].vida=maq.cartasm[j].vida-1;
+                                maq.cartasm[k].vida=maq.cartasm[k].vida+1;
+                            }
+                            if(maq.cartasm[i].vida==maq.cartasm[k].vida){
+                                maq.cartasm[i].vida=maq.cartasm[i].vida-1;
+                                maq.cartasm[k].vida=maq.cartasm[k].vida+1;
+                            }
+                            else{
+                                correccionzeros(false, usu, maq);
+                            }
                         }
                     }
                 }
-            }
-        }while(maq.cartasm[0].vida==maq.cartasm[1].vida || maq.cartasm[0].vida==maq.cartasm[2].vida || maq.cartasm[1].vida==maq.cartasm[2].vida);
+            }while(maq.cartasm[0].vida==maq.cartasm[1].vida || maq.cartasm[0].vida==maq.cartasm[2].vida || maq.cartasm[1].vida==maq.cartasm[2].vida);
+        }
     }
  }
 
@@ -192,7 +220,7 @@ void correccionnumeros(bool correcto, TUsuario &usu, TMaquina &maq){
 
 
 // Funcion que muestra lo que puede hacer el usuario
-void showTurnUsu(TUsuario &usu, TMaquina &maq) {
+void showTurnUsu(TUsuario &usu, TMaquina &maq){
     if(maq.cartasm[0].vida==0 && maq.cartasm[1].vida==0 && maq.cartasm[2].vida==0 || usu.cartasu[0].vida==0 && usu.cartasu[1].vida==0 || usu.cartasu[0].vida==0 && usu.cartasu[2].vida==0 || usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0 || usu.cartasu[1].vida==0 && usu.cartasu[2].vida==0 && usu.cartasu[0].vida==0){
         correccionzeros(true,usu, maq);
     }
@@ -205,7 +233,6 @@ void showTurnUsu(TUsuario &usu, TMaquina &maq) {
     if((maq.cartasm[0].vida==maq.cartasm[1].vida && maq.cartasm[0].vida!=0 && maq.cartasm[1].vida!=0) || (maq.cartasm[0].vida==maq.cartasm[2].vida && maq.cartasm[0].vida!=0 && maq.cartasm[2].vida!=0) || (maq.cartasm[1].vida==maq.cartasm[2].vida && maq.cartasm[1].vida!=0 && maq.cartasm[2].vida!=0)){
         correccionnumeros(false,usu, maq);
     }
-
     mapa(usu, maq);
     cout << endl;
     cout << "Que vas a querer hacer?" << endl
@@ -553,7 +580,6 @@ void versusmachine(TUsuario &usu, TMaquina &maq){
             cout<<endl;
             usu.vida=usu.cartasu[0].vida+usu.cartasu[1].vida+usu.cartasu[2].vida;
             maq.vida=maq.cartasm[0].vida+maq.cartasm[1].vida+maq.cartasm[2].vida;
-
         }while(usu.vida!=0 && maq.vida!=0);
 
         if(maq.vida==0){
