@@ -6,7 +6,6 @@
 
 using namespace std;
 
-const int KMAXCHAR = 100;
 const int KMAXCARTAS = 4;
 
 // Estructura de la carta
