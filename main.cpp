@@ -360,7 +360,19 @@ char switchnature(){
     return nature;
 }
 
-// Módulo para cuando queramos usar los diferentes tipos de naturaleza
+
+//Habia problemas con este poder así que he preferido hacer un módulo a parte.
+void revivirMaq(TMaquina &maq){
+    for(int i=0;i<KMAXCARTAS-1;i++){
+        if(maq.cartasm[i].vida==0){
+            maq.cartasm[i].vida=maq.cartasm[i].vida+3;
+            break;
+        }
+    }
+    cout<< "El enemigo ha usado su naturaleza y ha revivido" << endl;
+}
+
+//Módulo para cuando queramos usar los diferentes tipos de naturaleza
 void usonaturaleza(TMaquina &maq, TUsuario &usu){
     int elegido;
     elegido=maxusu(usu); 
@@ -373,14 +385,6 @@ void usonaturaleza(TMaquina &maq, TUsuario &usu){
                     }
                 }
                 cout<< "El enemigo ha usado su naturaleza y ha aumentado la vida de una carta en 3" << endl;
-         break;
-        case 'b': for(int i=0;i<KMAXCARTAS-1;i++){
-                    if(maq.cartasm[i].vida==0){
-                        maq.cartasm[i].vida=maq.cartasm[i].vida+3;
-                        break;
-                    }
-                }
-                cout<< "El enemigo ha usado su naturaleza y ha revivido" << endl;
          break;
         case 'c': 
                 cout<< "El enemigo ha usado su naturaleza y ha restado a una carta tuya ("<<elegido<<") la mitad de su vida" << endl;
@@ -401,7 +405,7 @@ void usonaturaleza(TMaquina &maq, TUsuario &usu){
 }
 
 
-// Donde se haran todos los calculos de los ataques y de las defensas
+//Donde se haran todos los calculos de los ataques y de las defensas
 void operaciones(TUsuario &usu, TMaquina &maq){
     int resultado;
     if(usu.cartasu[3].vida+usu.cartasu[3].ataque>=maq.cartasm[3].vida){
@@ -432,7 +436,7 @@ void operaciones(TUsuario &usu, TMaquina &maq){
 }
 
 
-// Funcion donde el usuario elegirá que carta atacar y con cual
+//Funcion donde el usuario elegirá que carta atacar y con cual
 void attack(TUsuario &usu, TMaquina &maq){
     int option;
     bool mal=true;
@@ -471,7 +475,7 @@ void attack(TUsuario &usu, TMaquina &maq){
     operaciones(usu,maq);
 }
 
-// Funcion donde la maquina elegirá que carta atacar y con cual
+//Funcion donde la maquina elegirá que carta atacar y con cual
 void ataqueia(TUsuario &usu, TMaquina &maq){
     int resultado;
     usu.cartasu[3].vida=maxusu(usu);
@@ -545,6 +549,8 @@ void versusmachine(TUsuario &usu, TMaquina &maq){
         maq.naturaleza=switchnature();
 
         repartircartas(usu,maq);
+        maq.vida=maq.cartasm[0].vida+maq.cartasm[1].vida+maq.cartasm[2].vida;
+        int vidamitad=maq.vida/2;
         cout<<"Se reparten 3 cartas"<<endl;
 
         do{
@@ -553,12 +559,18 @@ void versusmachine(TUsuario &usu, TMaquina &maq){
             cin>>option;
             switch(option){
                 case 1:attack(usu, maq);
-                    if(maq.vida<=6 && maq.usado==true){
-                        usonaturaleza(maq,usu);
+                    if(maq.naturaleza=='b' && (maq.cartasm[0].vida==0 || maq.cartasm[1].vida==0 || maq.cartasm[2].vida==0) && maq.usado==true){
+                        revivirMaq(maq);
                         maq.usado=false;
                     }
-                    if(maq.vida!=0){
-                        ataqueia(usu, maq);
+                    else{
+                        if(maq.vida<=vidamitad && maq.usado==true && maq.naturaleza!='b'){
+                            usonaturaleza(maq,usu);
+                            maq.usado=false;
+                        }
+                        if(maq.vida!=0){
+                            ataqueia(usu, maq);
+                        }
                     }
                     break;
                 case 2: if(usu.tipo_magia==4 && usu.cartasu[0].vida!=0 && usu.cartasu[1].vida!=0 && usu.cartasu[2].vida!=0){
@@ -602,8 +614,8 @@ void showRulesMenu() {
        << "Opcion:";
 }
 
+//Módulo que muestra las regla número 5 del juego
 void maparegla(){
-    cout<<endl;
     cout<<"Sus cartas   Las de la Maquina"<<endl;
     for(int i=0; i<KMAXCARTAS-1;i++){
         cout<<'x'<<" ";
@@ -624,16 +636,15 @@ void maparegla(){
     cout<<endl;
     cout<<"Las x son las cartas que se juegan, representando su vida y ataque en función de la carta."<<endl;
     cout<<"Las y son el bonus añadido a las cartas que se consigue a través de las magias. Sólo afectan en el ataque."<<endl;
-    cout<<endl;
-    
 }
 
-
+//Módulo que muestra las reglas del juego
 void rules(){
     char option;
     do{
         showRulesMenu();
         cin>>option;
+        cout<<endl;
         switch (option) {
           case '1': cout<<"Se reparten 3 cartas, y un poder o naturaleza a cada jugador. Y mediante las vidas de sus cartas y ataque adicional que pueden obtener deberán derrotar a las cartas de sus contricantes."<<endl;
              break;
@@ -649,6 +660,7 @@ void rules(){
           default:
             error(ERR_OPTION);
         }
+        cout<<endl;
     }while(option!='v');
 }
 
