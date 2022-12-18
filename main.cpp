@@ -16,7 +16,6 @@ struct TCarta{
 
 // Estructura del jugador
 struct TUsuario{
-    int opcion;
     int vida;
     bool magica;
     int tipo_magia;
@@ -25,7 +24,6 @@ struct TUsuario{
 
 // Estructura de la maquina
 struct TMaquina{
-    int opcion;
     int vida;
     char naturaleza;
     bool usado;
